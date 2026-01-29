@@ -1,4 +1,5 @@
 # Mini Project 07 - Testing Data Access with EF Core and Dapper (.NET 10)
+![tests](assets/badges/tests-local.svg)
 
 ## Project Overview
 This project validates data access correctness by implementing the same query with EF Core and Dapper and proving both return identical results against a real PostgreSQL database.
