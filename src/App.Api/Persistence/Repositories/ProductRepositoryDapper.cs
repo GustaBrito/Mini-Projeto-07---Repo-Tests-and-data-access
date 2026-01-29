@@ -19,7 +19,7 @@ public sealed class ProductRepositoryDapper : IProductRepository
 select p.id,
        p.name,
        p.price,
-       c.name as categoryname
+       c.name as CategoryName
   from products p
   join categories c on c.id = p.category_id
  where p.price between @MinPrice and @MaxPrice

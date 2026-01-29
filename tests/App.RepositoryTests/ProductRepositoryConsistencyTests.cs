@@ -31,13 +31,13 @@ public sealed class ProductRepositoryConsistencyTests
             await using var dbContext = new AppDbContext(options);
             await dbContext.Database.MigrateAsync();
 
-            var electronics = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
-            var grocery = new Category { Id = Guid.NewGuid(), Name = "Grocery" };
-            var productA = new Product { Id = Guid.NewGuid(), Name = "Headphones", Price = 120m, CategoryId = electronics.Id };
-            var productB = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronics.Id };
-            var productC = new Product { Id = Guid.NewGuid(), Name = "Coffee", Price = 15m, CategoryId = grocery.Id };
+            var electronicsCategory = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
+            var groceryCategory = new Category { Id = Guid.NewGuid(), Name = "Grocery" };
+            var headphones = new Product { Id = Guid.NewGuid(), Name = "Headphones", Price = 120m, CategoryId = electronicsCategory.Id };
+            var keyboard = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronicsCategory.Id };
+            var coffee = new Product { Id = Guid.NewGuid(), Name = "Coffee", Price = 15m, CategoryId = groceryCategory.Id };
 
-            dbContext.AddRange(electronics, grocery, productA, productB, productC);
+            dbContext.AddRange(electronicsCategory, groceryCategory, headphones, keyboard, coffee);
             await dbContext.SaveChangesAsync();
 
             var efRepository = new ProductRepositoryEf(dbContext);

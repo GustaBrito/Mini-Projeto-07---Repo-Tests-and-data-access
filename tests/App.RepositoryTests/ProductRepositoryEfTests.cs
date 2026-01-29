@@ -32,14 +32,14 @@ public sealed class ProductRepositoryEfTests
             await using var dbContext = new AppDbContext(options);
             await dbContext.Database.MigrateAsync();
 
-            var electronics = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
-            var grocery = new Category { Id = Guid.NewGuid(), Name = "Grocery" };
-            var productA = new Product { Id = Guid.NewGuid(), Name = "Headphones", Price = 120m, CategoryId = electronics.Id };
-            var productB = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronics.Id };
-            var productC = new Product { Id = Guid.NewGuid(), Name = "Coffee", Price = 15m, CategoryId = grocery.Id };
-            var productD = new Product { Id = Guid.NewGuid(), Name = "Monitor", Price = 520m, CategoryId = electronics.Id };
+            var electronicsCategory = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
+            var groceryCategory = new Category { Id = Guid.NewGuid(), Name = "Grocery" };
+            var headphones = new Product { Id = Guid.NewGuid(), Name = "Headphones", Price = 120m, CategoryId = electronicsCategory.Id };
+            var keyboard = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronicsCategory.Id };
+            var coffee = new Product { Id = Guid.NewGuid(), Name = "Coffee", Price = 15m, CategoryId = groceryCategory.Id };
+            var monitor = new Product { Id = Guid.NewGuid(), Name = "Monitor", Price = 520m, CategoryId = electronicsCategory.Id };
 
-            dbContext.AddRange(electronics, grocery, productA, productB, productC, productD);
+            dbContext.AddRange(electronicsCategory, groceryCategory, headphones, keyboard, coffee, monitor);
             await dbContext.SaveChangesAsync();
 
             var repository = new ProductRepositoryEf(dbContext);
@@ -48,8 +48,8 @@ public sealed class ProductRepositoryEfTests
             result.Should().BeEquivalentTo(
                 new[]
                 {
-                    new ProductInRange(productA.Id, productA.Name, productA.Price, electronics.Name),
-                    new ProductInRange(productB.Id, productB.Name, productB.Price, electronics.Name)
+                    new ProductInRange(headphones.Id, headphones.Name, headphones.Price, electronicsCategory.Name),
+                    new ProductInRange(keyboard.Id, keyboard.Name, keyboard.Price, electronicsCategory.Name)
                 },
                 options => options.WithStrictOrdering());
         }
@@ -72,11 +72,11 @@ public sealed class ProductRepositoryEfTests
             await using var dbContext = new AppDbContext(options);
             await dbContext.Database.MigrateAsync();
 
-            var electronics = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
-            var minProduct = new Product { Id = Guid.NewGuid(), Name = "Cable", Price = 50m, CategoryId = electronics.Id };
-            var maxProduct = new Product { Id = Guid.NewGuid(), Name = "Webcam", Price = 300m, CategoryId = electronics.Id };
+            var electronicsCategory = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
+            var cable = new Product { Id = Guid.NewGuid(), Name = "Cable", Price = 50m, CategoryId = electronicsCategory.Id };
+            var webcam = new Product { Id = Guid.NewGuid(), Name = "Webcam", Price = 300m, CategoryId = electronicsCategory.Id };
 
-            dbContext.AddRange(electronics, minProduct, maxProduct);
+            dbContext.AddRange(electronicsCategory, cable, webcam);
             await dbContext.SaveChangesAsync();
 
             var repository = new ProductRepositoryEf(dbContext);
@@ -85,8 +85,8 @@ public sealed class ProductRepositoryEfTests
             result.Should().BeEquivalentTo(
                 new[]
                 {
-                    new ProductInRange(minProduct.Id, minProduct.Name, minProduct.Price, electronics.Name),
-                    new ProductInRange(maxProduct.Id, maxProduct.Name, maxProduct.Price, electronics.Name)
+                    new ProductInRange(cable.Id, cable.Name, cable.Price, electronicsCategory.Name),
+                    new ProductInRange(webcam.Id, webcam.Name, webcam.Price, electronicsCategory.Name)
                 },
                 options => options.WithStrictOrdering());
         }

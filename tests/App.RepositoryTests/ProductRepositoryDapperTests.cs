@@ -32,14 +32,14 @@ public sealed class ProductRepositoryDapperTests
             await using var dbContext = new AppDbContext(options);
             await dbContext.Database.MigrateAsync();
 
-            var electronics = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
-            var grocery = new Category { Id = Guid.NewGuid(), Name = "Grocery" };
-            var productA = new Product { Id = Guid.NewGuid(), Name = "Headphones", Price = 120m, CategoryId = electronics.Id };
-            var productB = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronics.Id };
-            var productC = new Product { Id = Guid.NewGuid(), Name = "Coffee", Price = 15m, CategoryId = grocery.Id };
-            var productD = new Product { Id = Guid.NewGuid(), Name = "Monitor", Price = 520m, CategoryId = electronics.Id };
+            var electronicsCategory = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
+            var groceryCategory = new Category { Id = Guid.NewGuid(), Name = "Grocery" };
+            var headphones = new Product { Id = Guid.NewGuid(), Name = "Headphones", Price = 120m, CategoryId = electronicsCategory.Id };
+            var keyboard = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronicsCategory.Id };
+            var coffee = new Product { Id = Guid.NewGuid(), Name = "Coffee", Price = 15m, CategoryId = groceryCategory.Id };
+            var monitor = new Product { Id = Guid.NewGuid(), Name = "Monitor", Price = 520m, CategoryId = electronicsCategory.Id };
 
-            dbContext.AddRange(electronics, grocery, productA, productB, productC, productD);
+            dbContext.AddRange(electronicsCategory, groceryCategory, headphones, keyboard, coffee, monitor);
             await dbContext.SaveChangesAsync();
 
             var repository = new ProductRepositoryDapper(connectionString);
@@ -48,8 +48,8 @@ public sealed class ProductRepositoryDapperTests
             result.Should().BeEquivalentTo(
                 new[]
                 {
-                    new ProductInRange(productA.Id, productA.Name, productA.Price, electronics.Name),
-                    new ProductInRange(productB.Id, productB.Name, productB.Price, electronics.Name)
+                    new ProductInRange(headphones.Id, headphones.Name, headphones.Price, electronicsCategory.Name),
+                    new ProductInRange(keyboard.Id, keyboard.Name, keyboard.Price, electronicsCategory.Name)
                 },
                 options => options.WithStrictOrdering());
         }
@@ -72,10 +72,10 @@ public sealed class ProductRepositoryDapperTests
             await using var dbContext = new AppDbContext(options);
             await dbContext.Database.MigrateAsync();
 
-            var electronics = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
-            var product = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronics.Id };
+            var electronicsCategory = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
+            var keyboard = new Product { Id = Guid.NewGuid(), Name = "Keyboard", Price = 250m, CategoryId = electronicsCategory.Id };
 
-            dbContext.AddRange(electronics, product);
+            dbContext.AddRange(electronicsCategory, keyboard);
             await dbContext.SaveChangesAsync();
 
             var repository = new ProductRepositoryDapper(connectionString);
@@ -102,12 +102,12 @@ public sealed class ProductRepositoryDapperTests
             await using var dbContext = new AppDbContext(options);
             await dbContext.Database.MigrateAsync();
 
-            var electronics = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
-            var productA = new Product { Id = Guid.NewGuid(), Name = "Adapter", Price = 120m, CategoryId = electronics.Id };
-            var productB = new Product { Id = Guid.NewGuid(), Name = "Cable", Price = 120m, CategoryId = electronics.Id };
-            var productC = new Product { Id = Guid.NewGuid(), Name = "Mouse", Price = 80m, CategoryId = electronics.Id };
+            var electronicsCategory = new Category { Id = Guid.NewGuid(), Name = "Electronics" };
+            var adapter = new Product { Id = Guid.NewGuid(), Name = "Adapter", Price = 120m, CategoryId = electronicsCategory.Id };
+            var cable = new Product { Id = Guid.NewGuid(), Name = "Cable", Price = 120m, CategoryId = electronicsCategory.Id };
+            var mouse = new Product { Id = Guid.NewGuid(), Name = "Mouse", Price = 80m, CategoryId = electronicsCategory.Id };
 
-            dbContext.AddRange(electronics, productA, productB, productC);
+            dbContext.AddRange(electronicsCategory, adapter, cable, mouse);
             await dbContext.SaveChangesAsync();
 
             var repository = new ProductRepositoryDapper(connectionString);
@@ -116,9 +116,9 @@ public sealed class ProductRepositoryDapperTests
             result.Should().BeEquivalentTo(
                 new[]
                 {
-                    new ProductInRange(productC.Id, productC.Name, productC.Price, electronics.Name),
-                    new ProductInRange(productA.Id, productA.Name, productA.Price, electronics.Name),
-                    new ProductInRange(productB.Id, productB.Name, productB.Price, electronics.Name)
+                    new ProductInRange(mouse.Id, mouse.Name, mouse.Price, electronicsCategory.Name),
+                    new ProductInRange(adapter.Id, adapter.Name, adapter.Price, electronicsCategory.Name),
+                    new ProductInRange(cable.Id, cable.Name, cable.Price, electronicsCategory.Name)
                 },
                 options => options.WithStrictOrdering());
         }
