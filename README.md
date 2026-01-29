@@ -60,7 +60,8 @@ Repository behavior:
 ## How to Run the Project
 Prerequisites:
 - .NET 10 SDK
-- Docker (to execute integration tests)
+- Docker Desktop (to execute integration tests)
+- PostgreSQL image: `postgres:16-alpine` (pulled by Testcontainers)
 
 Commands:
 - dotnet test
